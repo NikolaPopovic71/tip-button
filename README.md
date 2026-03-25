@@ -2,7 +2,7 @@
 
 A React component featuring a 3D CSS coin-flip animation triggered on click. No animation libraries, no canvas — pure CSS custom properties driven by a `requestAnimationFrame` physics loop.
 
-Live demo: [tip-button.netlify.app](https://tip-button.netlify.app) <!-- update after deploy -->
+Live demo: [ponitech-tip-button.netlify.app](https://ponitech-tip-button.netlify.app/) <!-- update after deploy -->
 
 ---
 
