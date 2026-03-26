@@ -318,32 +318,83 @@ const STYLES = `
 
 // ─── Currencies ───────────────────────────────────────────────────────────────
 const CURRENCIES = [
-  { symbol: "$", code: "USD", glow: "rgba(232,200,74,0.45)",  sparkle: ["#e8c84a","#fff8d0","#ffd700"] },
-  { symbol: "€", code: "EUR", glow: "rgba(140,180,255,0.40)", sparkle: ["#8cb4ff","#c8dcff","#ffffff"] },
-  { symbol: "£", code: "GBP", glow: "rgba(160,255,140,0.38)", sparkle: ["#7ddc6e","#c8ffb8","#ffffff"] },
-  { symbol: "¥", code: "JPY", glow: "rgba(255,160,160,0.38)", sparkle: ["#ff8080","#ffcccc","#ffffff"] },
-  { symbol: "₿", code: "BTC", glow: "rgba(255,165,80,0.45)",  sparkle: ["#f7931a","#ffc87a","#fff0d0"] },
+  {
+    symbol: "$",
+    code: "USD",
+    glow: "rgba(232,200,74,0.45)",
+    sparkle: ["#e8c84a", "#fff8d0", "#ffd700"],
+  },
+  {
+    symbol: "€",
+    code: "EUR",
+    glow: "rgba(140,180,255,0.40)",
+    sparkle: ["#8cb4ff", "#c8dcff", "#ffffff"],
+  },
+  {
+    symbol: "£",
+    code: "GBP",
+    glow: "rgba(160,255,140,0.38)",
+    sparkle: ["#7ddc6e", "#c8ffb8", "#ffffff"],
+  },
+  {
+    symbol: "¥",
+    code: "JPY",
+    glow: "rgba(255,160,160,0.38)",
+    sparkle: ["#ff8080", "#ffcccc", "#ffffff"],
+  },
+  {
+    symbol: "₿",
+    code: "BTC",
+    glow: "rgba(255,165,80,0.45)",
+    sparkle: ["#f7931a", "#ffc87a", "#fff0d0"],
+  },
 ];
 
 // ─── Tier by amount ───────────────────────────────────────────────────────────
 function getTier(amount) {
-  if (amount <= 1) return { variant:"copper", size:"3rem",   thick:"0.286rem", barColor:"#b5632a", selColor:"#b5632a", hoverColor:"#c87941", thanksColor:"#e8a87c" };
-  if (amount <= 5) return { variant:"silver", size:"3.5rem", thick:"0.318rem", barColor:"#8590b3", selColor:"#8590b3", hoverColor:"#aab2cc", thanksColor:"#c2cadf" };
-  return             { variant:"gold",   size:"4rem",   thick:"0.364rem", barColor:"#d4a832", selColor:"#d4a832", hoverColor:"#e8c84a", thanksColor:"#e8c84a" };
+  if (amount <= 1)
+    return {
+      variant: "copper",
+      size: "3rem",
+      thick: "0.286rem",
+      barColor: "#b5632a",
+      selColor: "#b5632a",
+      hoverColor: "#c87941",
+      thanksColor: "#e8a87c",
+    };
+  if (amount <= 5)
+    return {
+      variant: "silver",
+      size: "3.5rem",
+      thick: "0.318rem",
+      barColor: "#8590b3",
+      selColor: "#8590b3",
+      hoverColor: "#aab2cc",
+      thanksColor: "#c2cadf",
+    };
+  return {
+    variant: "gold",
+    size: "4rem",
+    thick: "0.364rem",
+    barColor: "#d4a832",
+    selColor: "#d4a832",
+    hoverColor: "#e8c84a",
+    thanksColor: "#e8c84a",
+  };
 }
 
 // ─── Sparkle burst ────────────────────────────────────────────────────────────
 function spawnSparkles(wrapEl, colors) {
   const count = 22;
   for (let i = 0; i < count; i++) {
-    const dot   = document.createElement("div");
+    const dot = document.createElement("div");
     const angle = (i / count) * 360 + Math.random() * 16;
-    const dist  = 28 + Math.random() * 40;
-    const size  = 2 + Math.random() * 5;
-    const dur   = 380 + Math.random() * 340;
+    const dist = 28 + Math.random() * 40;
+    const size = 2 + Math.random() * 5;
+    const dur = 380 + Math.random() * 340;
     const color = colors[Math.floor(Math.random() * colors.length)];
-    const dx    = Math.cos(angle * Math.PI / 180) * dist;
-    const dy    = Math.sin(angle * Math.PI / 180) * dist * 0.5;
+    const dx = Math.cos((angle * Math.PI) / 180) * dist;
+    const dy = Math.sin((angle * Math.PI) / 180) * dist * 0.5;
     dot.style.cssText = `
       position:absolute; border-radius:50%;
       width:${size}px; height:${size}px;
@@ -365,10 +416,10 @@ function playCoinSound(ctx, pitch = 1) {
   const t = ctx.currentTime;
 
   const partials = [
-    { freq: 440,  gain: 0.5,  decay: 1.8  },
-    { freq: 880,  gain: 0.25, decay: 1.2  },
-    { freq: 1320, gain: 0.15, decay: 0.8  },
-    { freq: 2200, gain: 0.08, decay: 0.4  },
+    { freq: 440, gain: 0.5, decay: 1.8 },
+    { freq: 880, gain: 0.25, decay: 1.2 },
+    { freq: 1320, gain: 0.15, decay: 0.8 },
+    { freq: 2200, gain: 0.08, decay: 0.4 },
     { freq: 3300, gain: 0.04, decay: 0.25 },
   ];
 
@@ -394,67 +445,107 @@ function playCoinSound(ctx, pitch = 1) {
 function useCoinAnimation(coinRefs, count) {
   const rafs = useRef([]);
 
-  const launch = useCallback((onShrink, onLanded, wrapEl, sparkleColors, audioCtx) => {
-    rafs.current.forEach(cancelAnimationFrame);
-    rafs.current = [];
+  const launch = useCallback(
+    (onShrink, onLanded, wrapEl, sparkleColors, audioCtx) => {
+      rafs.current.forEach(cancelAnimationFrame);
+      rafs.current = [];
 
-    const delays = count === 1 ? [0] : count === 2 ? [0, 180] : [0, 150, 300];
+      const delays = count === 1 ? [0] : count === 2 ? [0, 180] : [0, 150, 300];
 
-    delays.forEach((delay, idx) => {
-      const run = () => {
-        const coin = coinRefs[idx]?.current;
-        if (!coin) return;
+      delays.forEach((delay, idx) => {
+        const run = () => {
+          const coin = coinRefs[idx]?.current;
+          if (!coin) return;
 
-        const maxCount = 90 + idx * 4;
-        const maxFlip  = (Math.floor(Math.random() * 4) + 3) * Math.PI;
-        const sideRot  = Math.floor(Math.random() * 5) * 90;
-        const xDir     = idx === 0 ? 1 : idx === 1 ? 0.7 : 1.3;
-        let n = 0;
+          const maxCount = 90 + idx * 4;
+          const maxFlip = (Math.floor(Math.random() * 4) + 3) * Math.PI;
+          const sideRot = Math.floor(Math.random() * 5) * 90;
+          const xDir = idx === 0 ? 1 : idx === 1 ? 0.7 : 1.3;
+          let n = 0;
 
-        const loop = () => {
-          n++;
-          const t     = n / maxCount;
-          const angle = -maxFlip * Math.pow(t - 1, 2) + maxFlip;
+          const loop = () => {
+            n++;
+            const t = n / maxCount;
+            const angle = -maxFlip * Math.pow(t - 1, 2) + maxFlip;
 
-          coin.style.setProperty("--coin-y",   String(-14 * Math.pow(t * 2 - 1, 4) + 14));
-          coin.style.setProperty("--coin-x",   String(t * xDir));
-          coin.style.setProperty("--coin-sc",  String(t * 0.6));
-          coin.style.setProperty("--coin-rot", String(t * sideRot));
-          coin.style.setProperty("--front-sc", String(Math.max(Math.cos(angle), 0)));
-          coin.style.setProperty("--front-y",  String(Math.sin(angle)));
-          coin.style.setProperty("--mid-sc",   String(Math.abs(Math.cos(angle))));
-          coin.style.setProperty("--mid-y",    String(Math.cos((angle + Math.PI / 2) % Math.PI)));
-          coin.style.setProperty("--back-sc",  String(Math.max(Math.cos(angle - Math.PI), 0)));
-          coin.style.setProperty("--back-y",   String(Math.sin(angle - Math.PI)));
-          coin.style.setProperty("--shine-op", String(4 * Math.sin((angle + Math.PI / 2) % Math.PI) - 3.2));
-          coin.style.setProperty("--shine-bg", (-40 * (Math.cos((angle + Math.PI / 2) % Math.PI) - 0.5)) + "%");
+            coin.style.setProperty(
+              "--coin-y",
+              String(-14 * Math.pow(t * 2 - 1, 4) + 14),
+            );
+            coin.style.setProperty("--coin-x", String(t * xDir));
+            coin.style.setProperty("--coin-sc", String(t * 0.6));
+            coin.style.setProperty("--coin-rot", String(t * sideRot));
+            coin.style.setProperty(
+              "--front-sc",
+              String(Math.max(Math.cos(angle), 0)),
+            );
+            coin.style.setProperty("--front-y", String(Math.sin(angle)));
+            coin.style.setProperty(
+              "--mid-sc",
+              String(Math.abs(Math.cos(angle))),
+            );
+            coin.style.setProperty(
+              "--mid-y",
+              String(Math.cos((angle + Math.PI / 2) % Math.PI)),
+            );
+            coin.style.setProperty(
+              "--back-sc",
+              String(Math.max(Math.cos(angle - Math.PI), 0)),
+            );
+            coin.style.setProperty(
+              "--back-y",
+              String(Math.sin(angle - Math.PI)),
+            );
+            coin.style.setProperty(
+              "--shine-op",
+              String(4 * Math.sin((angle + Math.PI / 2) % Math.PI) - 3.2),
+            );
+            coin.style.setProperty(
+              "--shine-bg",
+              -40 * (Math.cos((angle + Math.PI / 2) % Math.PI) - 0.5) + "%",
+            );
 
-          if (n < maxCount) {
-            if (n === maxCount - 22 && idx === 0) onShrink();
-            rafs.current[idx] = requestAnimationFrame(loop);
-          } else {
-            if (wrapEl) spawnSparkles(wrapEl, sparkleColors);
-            playCoinSound(audioCtx, 0.9 + idx * 0.12);
-            setTimeout(() => { coin.style.opacity = "0"; }, 260);
-            if (idx === delays.length - 1) setTimeout(onLanded, 300);
-          }
+            if (n < maxCount) {
+              if (n === maxCount - 22 && idx === 0) onShrink();
+              rafs.current[idx] = requestAnimationFrame(loop);
+            } else {
+              if (wrapEl) spawnSparkles(wrapEl, sparkleColors);
+              playCoinSound(audioCtx, 0.9 + idx * 0.12);
+              setTimeout(() => {
+                coin.style.opacity = "0";
+              }, 260);
+              if (idx === delays.length - 1) setTimeout(onLanded, 300);
+            }
+          };
+
+          rafs.current[idx] = requestAnimationFrame(loop);
         };
 
-        rafs.current[idx] = requestAnimationFrame(loop);
-      };
-
-      if (delay === 0) run(); else setTimeout(run, delay);
-    });
-  }, [coinRefs, count]);
+        if (delay === 0) run();
+        else setTimeout(run, delay);
+      });
+    },
+    [coinRefs, count],
+  );
 
   const reset = useCallback(() => {
     rafs.current.forEach(cancelAnimationFrame);
-    coinRefs.forEach(r => {
+    coinRefs.forEach((r) => {
       if (!r?.current) return;
-      ["--coin-y","--coin-x","--coin-sc","--coin-rot",
-       "--front-sc","--front-y","--mid-sc","--mid-y",
-       "--back-sc","--back-y","--shine-op","--shine-bg"
-      ].forEach(p => r.current.style.removeProperty(p));
+      [
+        "--coin-y",
+        "--coin-x",
+        "--coin-sc",
+        "--coin-rot",
+        "--front-sc",
+        "--front-y",
+        "--mid-sc",
+        "--mid-y",
+        "--back-sc",
+        "--back-y",
+        "--shine-op",
+        "--shine-bg",
+      ].forEach((p) => r.current.style.removeProperty(p));
       r.current.style.opacity = "1";
     });
   }, [coinRefs]);
@@ -464,7 +555,11 @@ function useCoinAnimation(coinRefs, count) {
 
 // ─── Coin element ─────────────────────────────────────────────────────────────
 const CoinEl = ({ coinRef, variant, size, thick }) => (
-  <div className={`tip-coin ${variant}`} ref={coinRef} style={{ "--csize": size, "--thick": thick }}>
+  <div
+    className={`tip-coin ${variant}`}
+    ref={coinRef}
+    style={{ "--csize": size, "--thick": thick }}
+  >
     <div className="tip-coin__mid" />
     <div className="tip-coin__back" />
     <div className="tip-coin__face" />
@@ -489,13 +584,13 @@ const CoinEl = ({ coinRef, variant, size, thick }) => (
  *   coinCount        1 | 2 | 3
  */
 export default function TipButton({
-  amounts         = [1, 5, 10],
+  amounts = [1, 5, 10],
   currencies,
   defaultCurrency = "$",
   label,
   thankYouMessage = "Thank you!",
   onTip,
-  coinCount       = 1,
+  coinCount = 1,
 }) {
   const audioCtxRef = useRef(null);
 
@@ -504,7 +599,8 @@ export default function TipButton({
     const id = "tip-button-styles-v5";
     if (!document.getElementById(id)) {
       const s = document.createElement("style");
-      s.id = id; s.textContent = STYLES;
+      s.id = id;
+      s.textContent = STYLES;
       document.head.appendChild(s);
     }
 
@@ -512,7 +608,9 @@ export default function TipButton({
     // browser requests user gesture before allowing audio
     const prime = () => {
       if (!audioCtxRef.current) {
-        audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtxRef.current = new (
+          window.AudioContext || window.webkitAudioContext
+        )();
       }
       if (audioCtxRef.current.state === "suspended") {
         audioCtxRef.current.resume();
@@ -520,30 +618,40 @@ export default function TipButton({
       document.removeEventListener("pointerdown", prime);
     };
     document.addEventListener("pointerdown", prime);
+    document.addEventListener("touchstart", prime);
     return () => document.removeEventListener("pointerdown", prime);
+    document.removeEventListener("touchstart", prime);
   }, []);
 
   const available = currencies
-    ? CURRENCIES.filter(c => currencies.includes(c.symbol))
+    ? CURRENCIES.filter((c) => currencies.includes(c.symbol))
     : CURRENCIES;
 
   const [currency, setCurrency] = useState(
-    available.find(c => c.symbol === defaultCurrency) ?? available[0]
+    available.find((c) => c.symbol === defaultCurrency) ?? available[0],
   );
-  const [selected, setSelected] = useState(amounts[Math.floor(amounts.length / 2)]);
-  const [phase,    setPhase]    = useState("idle");
-  const [thanks,   setThanks]   = useState(false);
+  const [selected, setSelected] = useState(
+    amounts[Math.floor(amounts.length / 2)],
+  );
+  const [phase, setPhase] = useState("idle");
+  const [thanks, setThanks] = useState(false);
 
-  const r1      = useRef(null), r2 = useRef(null), r3 = useRef(null);
+  const r1 = useRef(null),
+    r2 = useRef(null),
+    r3 = useRef(null);
   const wrapRef = useRef(null);
-  const refs    = [r1, r2, r3].slice(0, coinCount);
-  const tier    = getTier(selected);
+  const refs = [r1, r2, r3].slice(0, coinCount);
+  const tier = getTier(selected);
   const btnLabel = label ?? `Tip ${currency.symbol}${selected}`;
 
   const { launch, reset } = useCoinAnimation(refs, coinCount);
 
   const handleClick = useCallback(() => {
     if (phase !== "idle") return;
+    // iOS/Android request resume() directly in touch handler
+    if (audioCtxRef.current?.state === "suspended") {
+      audioCtxRef.current.resume();
+    }
     setPhase("clicked");
     setThanks(false);
 
@@ -556,30 +664,41 @@ export default function TipButton({
           onTip?.(selected, currency.symbol);
           setTimeout(() => {
             setThanks(false);
-            setTimeout(() => { setPhase("idle"); reset(); }, 500);
+            setTimeout(() => {
+              setPhase("idle");
+              reset();
+            }, 500);
           }, 2400);
         },
         wrapRef.current,
         currency.sparkle,
-        audioCtxRef.current
+        audioCtxRef.current,
       );
     }, 50);
   }, [phase, launch, reset, onTip, selected, currency]);
 
-  const phaseClass = phase === "idle" ? "" : phase === "shrink" ? "clicked shrink" : phase;
-  const busy       = phase !== "idle" || thanks;
+  const phaseClass =
+    phase === "idle" ? "" : phase === "shrink" ? "clicked shrink" : phase;
+  const busy = phase !== "idle" || thanks;
 
   return (
     <div
       className="tip-root"
       data-busy={busy ? "true" : undefined}
-      style={{ display:"inline-flex", flexDirection:"column", alignItems:"center" }}
+      style={{
+        display: "inline-flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
     >
-
       {/* Currency row */}
-      <div className="tip-currency-row" role="group" aria-label="Select currency">
+      <div
+        className="tip-currency-row"
+        role="group"
+        aria-label="Select currency"
+      >
         <span className="tip-currency-label">Currency</span>
-        {available.map(c => (
+        {available.map((c) => (
           <button
             key={c.code}
             className={`tip-currency-btn${currency.code === c.code ? " active" : ""}`}
@@ -595,13 +714,16 @@ export default function TipButton({
 
       {/* Amount cards */}
       <div className="tip-amounts" role="group" aria-label="Select tip amount">
-        {amounts.map(a => {
+        {amounts.map((a) => {
           const t = getTier(a);
           return (
             <button
               key={a}
               className={`tip-amount-card${selected === a ? " selected" : ""}`}
-              style={{ "--sel-color": t.selColor, "--hover-color": t.hoverColor }}
+              style={{
+                "--sel-color": t.selColor,
+                "--hover-color": t.hoverColor,
+              }}
               onClick={() => !busy && setSelected(a)}
               aria-pressed={selected === a}
               disabled={busy}
@@ -623,13 +745,25 @@ export default function TipButton({
           style={{ visibility: thanks ? "hidden" : "visible" }}
           aria-label={btnLabel}
         >
-          <div className="tip-btn__bar" style={{ "--bar-color": tier.barColor }} />
+          <div
+            className="tip-btn__bar"
+            style={{ "--bar-color": tier.barColor }}
+          />
           <span className="tip-btn__text">{btnLabel}</span>
         </button>
 
-        <div ref={wrapRef} className={`tip-coin-wrap${phase === "landed" ? " landed" : ""}`}>
+        <div
+          ref={wrapRef}
+          className={`tip-coin-wrap${phase === "landed" ? " landed" : ""}`}
+        >
           {refs.map((ref, i) => (
-            <CoinEl key={i} coinRef={ref} variant={tier.variant} size={tier.size} thick={tier.thick} />
+            <CoinEl
+              key={i}
+              coinRef={ref}
+              variant={tier.variant}
+              size={tier.size}
+              thick={tier.thick}
+            />
           ))}
         </div>
       </div>
@@ -638,13 +772,15 @@ export default function TipButton({
       <div className="tip-thanks-block" aria-live="polite">
         <span
           className={`tip-thanks-inner${thanks ? " visible" : ""}`}
-          style={{ "--thanks-color": tier.thanksColor, "--thanks-glow": currency.glow }}
+          style={{
+            "--thanks-color": tier.thanksColor,
+            "--thanks-glow": currency.glow,
+          }}
           aria-hidden={!thanks}
         >
           {thankYouMessage}
         </span>
       </div>
-
     </div>
   );
 }
